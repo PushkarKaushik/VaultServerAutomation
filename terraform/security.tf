@@ -69,7 +69,7 @@ ingress {
 resource "aws_security_group" "instance_prometheus" {
  description = "controls direct access to application instances"
  vpc_id      = "${aws_vpc.vpc-tf.id}"
- name        = "application-instances-private-sg-1"
+ name        = "application-instances-prometheus"
 ingress {
    protocol    = "TCP"
    from_port   = 22

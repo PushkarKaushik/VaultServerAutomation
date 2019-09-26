@@ -1,0 +1,10 @@
+#ssh config file 
+HOST_NAME: bastion
+PEM_FILE_PATH: ~/Downloads/nvirginia.pem
+#BASTION_IP: 54.82.170.86
+NID: 10.0.
+
+#ansible.cfg configuration
+PATH_SSH_CONFIG: config
+
+# ansible host configuration

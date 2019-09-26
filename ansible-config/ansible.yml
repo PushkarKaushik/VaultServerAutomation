@@ -1,0 +1,8 @@
+- name: ansible config  deployment playbook
+  hosts: localhost
+  become: yes
+  become_method: sudo
+  remote_user: ubuntu
+  roles:
+    - ansible_config
+

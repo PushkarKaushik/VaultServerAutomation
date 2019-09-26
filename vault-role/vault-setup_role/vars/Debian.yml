@@ -1,0 +1,8 @@
+---
+
+CONFIG_PATH: /volumes/config/s3vault.json
+S3_REGION: eu-west-1
+
+#use this if you want to use your local system to store vault data by commenting upper variable and uncomment lower one
+
+# CONFIG_PATH: /etc/vault/config.json

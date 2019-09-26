@@ -1,0 +1,98 @@
+- name: Install basic packages
+  package:
+    name: ['wget','unzip','curl','systemd','vim',]
+    state: present
+    update_cache: yes
+
+- name: Download vault
+  get_url:
+    url: "{{ vault_archive_url }}"
+    dest: "{{ vault_archive_dest }}"
+
+- name: Extract vault archive
+  unarchive:
+    src: "{{ vault_archive_dest }}"
+    dest: /usr/bin/
+    owner: root
+    group: root
+    remote_src: yes
+
+- name: Create a vault directory in etc
+  file:
+    path: /etc/vault
+    state: directory
+    owner: root
+    group: root
+
+- name: Create a vault directory in opt
+  file:
+    path: /opt/vault-data
+    state: directory
+    owner: root
+    group: root
+
+- name: Create a vault directory in /logs
+  file:
+    path: /logs
+    state: directory
+    owner: root
+    group: root
+
+- name: Create a vault directory in logs
+  file:
+    path: /logs/vault
+    state: directory
+    owner: root
+    group: root
+
+- name: Create a volumes directory in home for s3 config file
+  file:
+    path: /volumes
+    state: directory
+    owner: root
+    group: root
+
+
+- name: Create a volumes directory in home for s3 config file
+  file:
+    path: /volumes/config
+    state: directory
+    owner: root
+    group: root
+
+
+
+- name: Copy config.json file for local setup
+  copy:
+    src: config.json
+    dest: '/etc/vault'
+
+- name: Copy vault s3 backend file
+  template:
+    src: templates/s3vault.json.j2
+    dest: /volumes/config/s3vault.json
+  when: ansible_service_mgr == "systemd"
+  become: yes
+ 
+  #- name: Copy s3vault.json file for s3 as backend setup
+  #copy:
+  #  src: s3vault.json
+  #  dest: '/volumes/config/'
+
+
+- name: Copy vault service file
+  template:
+    src: templates/vault.service.j2
+    dest: /etc/systemd/system/vault.service
+  when: ansible_service_mgr == "systemd"
+  become: yes
+
+- name: Starting vault service
+  service:
+    daemon_reload: yes
+    name: vault.service
+    state: started
+    enabled: yes
+  when: ansible_service_mgr == "systemd"
+
+

@@ -1,0 +1,5 @@
+---
+# handlers file for nginx-reverse
+- name: Restart nginx
+  service: name=nginx state=restarted
+

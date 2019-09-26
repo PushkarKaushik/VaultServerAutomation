@@ -1,0 +1,9 @@
+---
+# handlers file for kibana-setup_role
+
+- name: Restart kibana
+  service: name=kibana state=restarted
+
+- name: Restart nginx
+  service: name=nginx state=restarted
+

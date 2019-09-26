@@ -1,0 +1,78 @@
+---
+
+- name: Adding key for kibana
+  apt_key:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+
+- name: Add Kibana repository...
+  apt_repository:
+    repo: 'deb https://artifacts.elastic.co/packages/{{ KIBANA_VERSION }}.x/apt stable main'
+    state: present
+
+- name: Update and upgrade apt packages
+  become: true
+  apt:
+    upgrade: yes
+    update_cache: yes
+    cache_valid_time: 86400
+
+- name: Installing Kibana
+  apt: name=kibana state=present
+
+- name: Copy kibana YAML file
+  template:
+    src: templates/kibana.yml.j2
+    dest: /etc/kibana/kibana.yml
+  become: yes
+
+- name: update-rc.d kibana defaults 96 9
+  sudo: yes
+  shell: update-rc.d kibana defaults 96 9
+
+- name: Start and enable kibana
+  service:
+    daemon_reload: yes
+    name: kibana
+    state: started
+    enabled: yes
+  when: ansible_service_mgr == "systemd"
+
+- name: Installing Kibana and Nginx dependencies ...
+  apt: name={{ item }} state=present
+  with_items:
+    - nginx
+    - apache2-utils
+  notify:
+    - Restart nginx
+    - Restart kibana
+
+- name: Install passlib (required for writing htpasswd file)...
+  apt:
+    name: python3-passlib
+    state: installed
+
+- name: Create htpasswd file to restrict access to Kibana web interface...
+  htpasswd:
+    name: "{{ USERNAME_FOR_KIBANA }}"
+    password: "{{ KIBANA_PASSWORD }}"
+    path: /etc/nginx/htpasswd.users
+
+
+- name: Copy default file of nginx file
+  template:
+    src: templates/default.j2
+    dest: /etc/nginx/sites-available/default
+  when: ansible_service_mgr == "systemd"
+  become: yes
+
+- name: Copy default file of nginx file
+  template:
+    src: templates/default.j2
+    dest: /etc/nginx/sites-enabled/default
+  when: ansible_service_mgr == "systemd"
+  become: yes
+  notify:
+    - Restart kibana
+    - Restart nginx
+

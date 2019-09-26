@@ -1,0 +1,2 @@
+ssh_args = -F {{ PATH_SSH_CONFIG  }} -o ControlMaster=auto -o ControlPersist=30m
+control_path = ~/.ssh/ansible-%%r@%%h:%%p

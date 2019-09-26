@@ -1,0 +1,7 @@
+---
+
+KIBANA_VERSION: "7.3.1"
+HOST_IP: localhost
+USERNAME_FOR_KIBANA: kibanaadmin
+KIBANA_PASSWORD: 12345
+

@@ -1,0 +1,4 @@
+---
+
+CONFIG_PATH: /volumes/config/s3vault.json
+S3_REGION: eu-west-1

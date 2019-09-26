@@ -1,0 +1,9 @@
+---
+# defaults file for vault-setup_role
+
+vault_ver: 1.2.2
+vault_archive_url: https://releases.hashicorp.com/vault/{{ vault_ver }}/vault_{{ vault_ver }}_linux_amd64.zip
+vault_archive_dest: /opt/vault_{{ vault_ver }}_linux_amd64.zip
+
+
+

@@ -1,0 +1,14 @@
+HOST {{ HOST_NAME }}
+  IdentityFile {{ PEM_FILE_PATH }}
+  User ubuntu
+  Port 22
+  HostName {{ BASTION_IP }}
+  ControlMaster auto
+  ControlPath ~/.ssh/ansible-%r@%h:%p
+  ControlPersist 5m
+
+HOST {{ NID }}*
+  User ubuntu
+  IdentityFile {{ PEM_FILE_PATH }}
+  ProxyCommand ssh {{ HOST_NAME }} -W %h:%p
+

@@ -1,0 +1,7 @@
+---
+# vars file for kibana-setup_role
+
+KIBANA_VERSION: "7"
+HOST_IP: localhost
+USERNAME_FOR_KIBANA: kibanaadmin
+KIBANA_PASSWORD: 12345

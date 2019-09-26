@@ -1,0 +1,7 @@
+aws_region = "us-east-1"
+my_ip = "61.95.220.249"
+public_tag = "BastionHost"
+aws_bucket_name = "pushkar-kumar96318"
+instanceType = "t2.micro"
+instanceTypePrometheus = "t2.medium"
+prometheusTag = "PrometheusGrafana"

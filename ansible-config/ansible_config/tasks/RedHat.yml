@@ -1,0 +1,23 @@
+---
+
+- name: copy ssh-config  file
+  template:
+    src: templates/config.j2
+    dest: /etc/ansible/config
+    #when: ansible_service_mgr == "systemd"
+  become: yes
+
+- name: copy host or inventory  file
+  template:
+    src: templates/hosts.j2
+    dest: /etc/ansible/hosts
+    #  when: ansible_service_mgr == "systemd"
+  become: yes
+
+- name: copy ansible  file
+  template:
+    src: templates/ansible.j2
+    dest: /etc/ansible/ansible
+    #  when: ansible_service_mgr == "systemd"
+  become: yes
+

@@ -1,0 +1,71 @@
+---
+
+- name: checking kibana is present or not
+  stat: path=/etc/kibana
+  register: kibana
+
+- name: Downloading kibana package ...
+  get_url:
+    url: https://artifacts.elastic.co/downloads/kibana/kibana-{{ KIBANA_VERSION }}-x86_64.rpm
+    dest: /opt/
+
+- name: Installing kibana ...
+  yum:
+    name: /opt/kibana-{{ KIBANA_VERSION }}-x86_64.rpm
+    state: present
+
+- name: Copy kibana YAML file
+  template:
+    src: templates/kibana.yml.j2
+    dest: /etc/kibana/kibana.yml
+  become: yes
+
+- name: checking epel-repo
+  stat:
+    path: /etc/yum.repos.d/epel.repo
+  register: stat_result
+
+- name: installing the epel-repo
+  yum:
+    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+    state: present
+  when: stat_result.stat.exists == False
+
+- name: Installing nginx  on REDHAT
+  yum:
+    name: nginx
+    state: installed
+
+- name: Enable nginx configuration
+  template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf
+
+- name: Copy default file of nginx file
+  template:
+    src: templates/default.j2
+    dest: /etc/nginx/sites-available/default
+  when: ansible_service_mgr == "systemd"
+  become: yes
+
+- name: Copy default file of nginx file
+  template:
+    src: templates/default.j2
+    dest: /etc/nginx/sites-enabled/default
+  when: ansible_service_mgr == "systemd"
+  become: yes
+
+
+- name: Install passlib (required for writing htpasswd file).
+  yum:
+    name: python-passlib
+    state: present
+
+- name: Create htpasswd file to restrict access to Kibana web interface.
+  htpasswd:
+    name: "{{ USERNAME_FOR_KIBANA }}"
+    password: "{{ KIBANA_PASSWORD }}"
+    path: /etc/nginx/htpasswd.users
+  notify:
+    - Restart nginx
+    - Restart kibana
+
+
